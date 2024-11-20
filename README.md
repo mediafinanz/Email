@@ -258,7 +258,7 @@ if ('develop' === \MVC\Config::get_MVC_ENV())
 
 ## Module Events
 
-`email.controller.destruct`  
+`email.controller.index.destruct`  
 - gets called in `\Email\Controller\Index::__destruct`
 
 `email.model.index.saveToSpooler.done`

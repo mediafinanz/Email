@@ -78,6 +78,6 @@ class Index extends Controller
      */
     public function __destruct()
     {
-        \MVC\Event::run('email.controller.destruct');
+        \MVC\Event::run('email.controller.index.destruct');
     }
 }
