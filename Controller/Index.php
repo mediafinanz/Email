@@ -73,8 +73,11 @@ class Index extends Controller
         return $this->oModelEmail->cleanup();
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function __destruct()
     {
-        ;
+        \MVC\Event::run('email.controller.destruct');
     }
 }
