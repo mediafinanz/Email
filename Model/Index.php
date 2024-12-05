@@ -138,7 +138,7 @@ class Index
      * @return string
      * @throws \ReflectionException
      */
-	public function saveToSpooler (Email $oEmail = null)
+	public function saveToSpooler (?Email $oEmail = null)
 	{
 		if (is_null($oEmail))
 		{
@@ -536,7 +536,7 @@ class Index
      * @return \Email\DataType\Email|null
      * @throws \ReflectionException
      */
-    public function saveAttachementsOfEmail(Email $oEmail = null)
+    public function saveAttachementsOfEmail(?Email $oEmail = null)
     {
         if (null === $oEmail || null === $oEmail->get_oAttachment())
         {
@@ -559,7 +559,7 @@ class Index
      * @return \Email\DataType\EmailAttachment|null
      * @throws \ReflectionException
      */
-    public function saveAttachment(EmailAttachment $oEmailAttachment = null)
+    public function saveAttachment(?EmailAttachment $oEmailAttachment = null)
     {
         if (null === $oEmailAttachment)
         {
