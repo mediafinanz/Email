@@ -30,9 +30,11 @@ class Index extends Controller
     }
 
     /**
+     * @param \MVC\DataType\DTRequestCurrent|null $oDTRequestCurrent
+     * @param \MVC\DataType\DTRoute|null          $oDTRoute
      * @throws \ReflectionException
      */
-	public function __construct(?DTRequestCurrent $oDTRequestCurrent = null, DTRoute $oDTRoute = null)
+	public function __construct(?DTRequestCurrent $oDTRequestCurrent = null, ?DTRoute $oDTRoute = null)
 	{
         $aConfig = \MVC\Config::MODULE('Email');
 		$this->oModelEmail = new \Email\Model\Index(
