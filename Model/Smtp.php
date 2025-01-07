@@ -17,6 +17,7 @@ use MVC\Config;
 use MVC\DataType\DTArrayObject;
 use MVC\DataType\DTKeyValue;
 use MVC\Event;
+use MVC\Log;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -88,10 +89,12 @@ class Smtp
             $bSuccess = $oPHPMailer->Send();
             $sMessage = json_encode($bSuccess);
 
-        } catch (phpmailerException $oException) {
+        } catch (Exception $oException) {
 
             $bSuccess = false;
             $sMessage = $oException->getMessage();
+
+            Log::write($oException, 'mail.log');
 
             Event::run ('mvc.error',
                 DTArrayObject::create()
@@ -99,10 +102,12 @@ class Smtp
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
             );
 
-        } catch (Exception $oException) {
+        } catch (\Exception $oException) {
 
             $bSuccess = false;
             $sMessage = $oException->getMessage();
+
+            Log::write($oException, 'mail.log');
 
             Event::run ('mvc.error',
                 DTArrayObject::create()
@@ -116,7 +121,7 @@ class Smtp
             ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($sMessage))
             ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException));
 
-        Event::run('email.model.index.send.response', $oResponse);
+        Event::run('email.model.smtp.sendViaPhpMailer.after', $oResponse);
 
         return $oResponse;
     }
