@@ -38,12 +38,6 @@ $aConfig['MODULE']['Foo']['Email'] = array(
 
         // send e-mail via SMTP
         return \Email\Model\Smtp::sendViaPhpMailer($oEmail);
-
-//        $oResponse = \MVC\DataType\DTArrayObject::create()
-//            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(true))
-//            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sMessage')->set_sValue("SUCCESS\t" . ' *** Closure *** '))
-//            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('oException')->set_sValue(null));
-//        return $oResponse;
     },
     
     'sSenderEmailAddress' => getenv('email.sSenderEmailAddress'),
@@ -72,7 +66,7 @@ _create an Email Object and add job to Queue_
 // email
 $oEmail = \Email\DataType\Email::create()
     ->set_subject('Example Subject')
-    ->set_recipientMailAdresses(array('info@ueffing.net'))
+    ->set_recipientMailAdresses(array('foo@example.com'))
     ->set_senderMail(Config::MODULE()['Email']['sSenderEmailAddress'])
     ->set_senderName('foo')
     ->set_text("Foo\nbar\n")
