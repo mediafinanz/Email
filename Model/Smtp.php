@@ -88,7 +88,7 @@ class Smtp
             $bSuccess = $oPHPMailer->Send();
             $sMessage = json_encode($bSuccess);
 
-        } catch (phpmailerException $oException) {
+        } catch (Exception $oException) {
 
             $bSuccess = false;
             $sMessage = $oException->getMessage();
@@ -99,7 +99,7 @@ class Smtp
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
             );
 
-        } catch (Exception $oException) {
+        } catch (\Exception $oException) {
 
             $bSuccess = false;
             $sMessage = $oException->getMessage();
