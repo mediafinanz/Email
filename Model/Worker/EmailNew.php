@@ -44,7 +44,7 @@ class EmailNew implements \MVC\MVCInterface\InterfaceWorker
 
 	    // call Callback/Closure function
         $mResult = call_user_func(
-            \MVC\Config::MODULE()['Email']['oCallback'],
+            \MVC\Config::MODULE('Email')['oCallback'],
             $oEmail
         );
 
