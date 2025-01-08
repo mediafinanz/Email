@@ -25,13 +25,11 @@ git clone --branch 2.x https://github.com/emvicy/Email.git Email;
 
 add this config to the config of your primary working module.
 
-_(replace `'Foo'` by your primary module name)_
-
 ~~~php
 //######################################################################################################################
 // Module Email
 
-$aConfig['MODULE']['Foo']['Email'] = array(
+$aConfig['MODULE']['Email'] = array(
 
     // callback function
     'oCallback' => function($oEmail) {
@@ -67,7 +65,7 @@ _create an Email Object and add job to Queue_
 $oEmail = \Email\DataType\Email::create()
     ->set_subject('Example Subject')
     ->set_recipientMailAdresses(array('foo@example.com'))
-    ->set_senderMail(Config::MODULE()['Email']['sSenderEmailAddress'])
+    ->set_senderMail(Config::MODULE('Email')['sSenderEmailAddress'])
     ->set_senderName('foo')
     ->set_text("Foo\nbar\n")
     ->set_html('<h1>Foo</h1><p>bar</p>')
