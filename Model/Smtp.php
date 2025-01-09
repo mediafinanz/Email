@@ -12,12 +12,12 @@
 
 namespace Email\Model;
 
-use Email\DataType\Email;
+use Email\DataType\DTEmail;
+use Email\DataType\DTEmailResponse;
 use MVC\Config;
 use MVC\DataType\DTArrayObject;
 use MVC\DataType\DTKeyValue;
 use MVC\Event;
-use MVC\Log;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -25,15 +25,13 @@ use PHPMailer\PHPMailer\Exception;
 class Smtp
 {
     /**
-     * @param Email $oEmail
-     * @return DTArrayObject
+     * @param \Email\DataType\DTEmail $oDTEmail
+     * @return \Email\DataType\DTEmailResponse
      * @throws \ReflectionException
      */
-    public static function sendViaPhpMailer(Email $oEmail)
+    public static function sendViaPhpMailer(DTEmail $oDTEmail) : DTEmailResponse
     {
-        /** @var boolean $bSuccess */
-        $bSuccess = false;
-        $oException = null;
+        Event::run('email.model.smtp.sendViaPhpMailer.before', $oDTEmail);
 
         try {
 
@@ -53,28 +51,29 @@ class Smtp
 
             // Specify the content of the message.
             $oPHPMailer->setFrom(
-                $oEmail->get_senderMail(),
-                $oEmail->get_senderName()
+                $oDTEmail->get_senderMail(),
+                $oDTEmail->get_senderName()
             );
-            $oPHPMailer->Subject    = $oEmail->get_subject();
+            $oPHPMailer->Subject    = $oDTEmail->get_subject();
             $oPHPMailer->isHTML(true);
-            $oPHPMailer->Body       = $oEmail->get_html();
-            $oPHPMailer->AltBody    = $oEmail->get_text();
+            $oPHPMailer->Body       = $oDTEmail->get_html();
+            $oPHPMailer->AltBody    = $oDTEmail->get_text();
 
             // Recipients
             /** @var string $sEmailRecipient */
-            foreach ($oEmail->get_recipientMailAdresses() as $sEmailRecipient)
+            foreach ($oDTEmail->get_recipientMailAdresses() as $sEmailRecipient)
             {
                 $oPHPMailer->addAddress($sEmailRecipient);
             }
 
             // Attachments
             /** @var array $aDTArrayObject */
-            if (true === is_array($oEmail->get_oAttachment()))
+            if (true === is_array($oDTEmail->get_oAttachment()))
             {
-                foreach ($oEmail->get_oAttachment() as $aDTArrayObject)
+                /** @var DTArrayObject $aDTArrayObject */
+                foreach ($oDTEmail->get_oAttachment() as $aDTArrayObject)
                 {
-                    /** @var array $aDTKeyValue */
+                    /** @var \MVC\DataType\DTKeyValue $aDTKeyValue */
                     foreach ($aDTArrayObject as $aDTKeyValue)
                     {
                         $oDTKeyValue = DTKeyValue::create($aDTKeyValue);
@@ -91,38 +90,38 @@ class Smtp
 
         } catch (Exception $oException) {
 
-            $bSuccess = false;
-            $sMessage = $oException->getMessage();
+            Event::run('email.model.smtp.sendViaPhpMailer.error', $oException);
+            Event::run ('mvc.error', $oException);
 
-            Log::write($oException, 'mail.log');
+            $oDTEmailResponse = DTEmailResponse::create()
+                ->set_bSuccess(false)
+                ->set_sMessage($oException->getMessage())
+                ->set_oException($oException)
+            ;
 
-            Event::run ('mvc.error',
-                DTArrayObject::create()
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($oException->getMessage()))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
-            );
+            return $oDTEmailResponse;
 
         } catch (\Exception $oException) {
 
-            $bSuccess = false;
-            $sMessage = $oException->getMessage();
+            Event::run('email.model.smtp.sendViaPhpMailer.error', $oException);
+            Event::run ('mvc.error', $oException);
 
-            Log::write($oException, 'mail.log');
+            $oDTEmailResponse = DTEmailResponse::create()
+                ->set_bSuccess(false)
+                ->set_sMessage($oException->getMessage())
+                ->set_oException($oException)
+            ;
 
-            Event::run ('mvc.error',
-                DTArrayObject::create()
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($oException->getMessage()))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
-            );
+            return $oDTEmailResponse;
         }
 
-        $oResponse = DTArrayObject::create()
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue($bSuccess))
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($sMessage))
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException));
+        $oDTEmailResponse = DTEmailResponse::create()
+            ->set_bSuccess($bSuccess)
+            ->set_sMessage($sMessage)
+        ;
 
-        Event::run('email.model.smtp.sendViaPhpMailer.after', $oResponse);
+        Event::run('email.model.smtp.sendViaPhpMailer.after', $oDTEmailResponse);
 
-        return $oResponse;
+        return $oDTEmailResponse;
     }
 }

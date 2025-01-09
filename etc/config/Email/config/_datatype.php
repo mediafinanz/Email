@@ -24,63 +24,53 @@ $aDataType = array(
 
     // enable creation of events in datatype methods
     'createEvents' => true,
+
+    'class' => array(),
 );
 
-// classes
-$aDataType['class']['Config'] = array(
-    'name' => 'Config',
-    'file' => 'Config.php',
+$aDataType['class']['DTEmail'] = array(
+    'name' => 'DTEmail',
     'namespace' => $sThisModuleNamespace,
     'createHelperMethods' => true,
     'constant' => array(
     ),
     'property' => array(
-        array('key' => 'sAbsolutePathToFolderSpooler', 'var' => 'string',),
-        array('key' => 'sAbsolutePathToFolderAttachment', 'var' => 'string',),
-        array('key' => 'aIgnoreFile', 'var' => 'array', 'value' => array('..', '.', '.ignoreMe')),
-        array('key' => 'sFolderNew', 'var' => 'string', 'value' => 'new'),
-        array('key' => 'sFolderDone', 'var' => 'string', 'value' => 'done'),
-        array('key' => 'sFolderRetry', 'var' => 'string', 'value' => 'retry'),
-        array('key' => 'sFolderFail', 'var' => 'string', 'value' => 'fail'),
-        array('key' => 'iAmountToSpool', 'value' => 10, 'var' => 'int'),
-        array('key' => 'iMaxSecondsOfRetry', 'value' => (60 * 60 * 2), 'var' => 'int'),
-        array('key' => 'oCallback', 'var' => '\Closure', 'value' => null),
-    ),
-);
-
-// classes
-$aDataType['class']['Email'] = array(
-    'name' => 'Email',
-    'namespace' => $sThisModuleNamespace,
-    'createHelperMethods' => true,
-    'constant' => array(
-    ),
-    'property' => array(
-        array('key' => 'subject', 'var' => 'string',),
-        array('key' => 'recipientMailAdresses', 'var' => 'array',),
-        array('key' => 'text', 'var' => 'string',),
-        array('key' => 'html', 'var' => 'string',),
-        array('key' => 'senderMail', 'var' => 'string',),
-        array('key' => 'senderName', 'var' => 'string',),
+        array('key' => 'subject', 'var' => 'string', 'required' => true, 'forceCasting' => true,),
+        array('key' => 'recipientMailAdresses', 'var' => 'array', 'required' => true, 'forceCasting' => true,),
+        array('key' => 'text', 'var' => 'string', 'required' => true, 'forceCasting' => true,),
+        array('key' => 'html', 'var' => 'string', 'required' => false, 'forceCasting' => true,),
+        array('key' => 'senderMail', 'var' => 'string', 'required' => true, 'forceCasting' => true,),
+        array('key' => 'senderName', 'var' => 'string', 'required' => true, 'forceCasting' => true,),
         array(
             'key' => 'oAttachment',
             'var' => '\\MVC\\DataType\\DTArrayObject',
-            'value' => 'null',
+            'required' => false, 'forceCasting' => true,
         ),
     ),
 );
 
-// classes
-$aDataType['class']['EmailAttachment'] = array(
-    'name' => 'EmailAttachment',
+$aDataType['class']['DTEmailAttachment'] = array(
+    'name' => 'DTEmailAttachment',
     'namespace' => $sThisModuleNamespace,
     'createHelperMethods' => true,
     'constant' => array(
     ),
     'property' => array(
         array('key' => 'name', 'var' => 'string',),
-//                array('key' => 'content',),
         array('key' => 'file', 'var' => 'string',),
+    ),
+);
+
+$aDataType['class']['DTEmailResponse'] = array(
+    'name' => 'DTEmailResponse',
+    'namespace' => $sThisModuleNamespace,
+    'createHelperMethods' => true,
+    'constant' => array(
+    ),
+    'property' => array(
+        array('key' => 'bSuccess', 'var' => 'bool', 'value' => false, 'required' => true, 'forceCasting' => true,),
+        array('key' => 'sMessage', 'var' => 'string', 'required' => false, 'forceCasting' => true,),
+        array('key' => 'oException', 'var' => '\Exception', 'required' => false, 'forceCasting' => false,),
     ),
 );
 

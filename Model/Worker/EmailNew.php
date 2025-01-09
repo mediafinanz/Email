@@ -3,10 +3,8 @@
 namespace Email\Model\Worker;
 
 use App\DataType\DTAppTableQueue;
-use Email\DataType\Email;
-use MVC\DataType\DTArrayObject;
+use Email\DataType\DTEmail;
 use MVC\Event;
-use MVC\Log;
 use MVC\WorkerTrait;
 
 
@@ -22,33 +20,32 @@ class EmailNew implements \MVC\MVCInterface\InterfaceWorker
     public static function work(?DTAppTableQueue $oDTAppTableQueue = null) : void
     {
         // get email object from job value
-        $oEmail = Email::create(json_decode($oDTAppTableQueue->get_value(), true));
+        $aDTEmail = json_decode($oDTAppTableQueue->get_value(), true);
+        $oDTEmail = DTEmail::create($aDTEmail);
 
         // send email
-        self::send($oEmail);
+        self::send($oDTEmail);
     }
 
     #-------------------------------------------------------------------------------------------------------------------
-    # private
+    # protected
 
     /**
-     * Send E-Mail
-     * @param Email $oEmail
-     * @return DTArrayObject
+     * @param \Email\DataType\DTEmail $oDTEmail
+     * @return void
      * @throws \ReflectionException
      */
-	public static function send (Email $oEmail)
+    protected static function send (DTEmail $oDTEmail)
 	{
-        Event::run('email.model.worker.EmailNew.send.before', $oEmail);
-        Log::write($oEmail, 'mail.log');
+        Event::run('email.model.worker.EmailNew.send.before', $oDTEmail);
 
-	    // call Callback/Closure function
-        $mResult = call_user_func(
+        /** @var \Email\DataType\DTEmailResponse $oDTEmailResponse */
+        $oDTEmailResponse = call_user_func(
+            // call Callback/Closure function
             \MVC\Config::MODULE('Email')['oCallback'],
-            $oEmail
+            $oDTEmail
         );
 
-        Event::run('email.model.worker.EmailNew.send.after', $mResult);
-        Log::WRITE($mResult, 'mail.log');
+        Event::run('email.model.worker.EmailNew.send.after', $oDTEmailResponse);
 	}
 }

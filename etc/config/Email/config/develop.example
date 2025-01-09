@@ -1,38 +1,27 @@
 <?php
 
-//-------------------------------------------------------------------------------------
+//######################################################################################################################
 // Module Email
 
 $aConfig['MODULE']['Email'] = array(
 
-    // Spooler Folder
-    'sAbsolutePathToFolderSpooler' => realpath(__DIR__ . '/../../../') . '/data/spooler/',
+    // callback function
+    'oCallback' => function($oEmail) {
 
-    // Attachment Folder
-    'sAbsolutePathToFolderAttachment' => realpath(__DIR__ . '/../../../') . '/data/attachment/',
-
-    // Number of e-mails to be processed simultaneously
-    'iAmountToSpool' => 50,
-
-    // max. time span for new delivery attempts (from "retry")
-    'iMaxSecondsOfRetry' => (60 * 60 * 24 * 1), // 24h
-
-    // max. time AFTER RETRY (`iMaxSecondsOfRetry`)
-    // files in spooler will finally be deleted
-    // so in fact calculation is: (iMaxSecondsOfRetry + iMaxSecondsOfDeletion)
-    'iMaxSecondsOfDeletionAfterRetry' => (60 * 60 * 24 * 1), // 24h after iMaxSecondsOfRetry
-
-    'oCallback' => function(\Email\DataType\Email $oEmail) {
-        \Email\Model\Smtp::sendViaPhpMailer($oEmail);
+        // send e-mail via SMTP
+        return \Email\Model\Smtp::sendViaPhpMailer($oEmail);
     },
+
+    'sSenderEmailAddress' => getenv('email.sSenderEmailAddress'),
 
     /**
      * SMTP account settings
+     * get from .env file
      */
-    'sHost' => '',
-    'iPort' => 465, # ssl=465 | tls=587
-    'sSecure' => 'ssl', # ssl | tls
-    'bAuth' => true,
-    'sUsername' => '',
-    'sPassword' => '',
+    'sHost' => getenv('email.sHost'),
+    'iPort' => getenv('email.iPort'),       # ssl=465 | tls=587
+    'sSecure' => getenv('email.sSecure'),   # ssl | tls
+    'bAuth' => getenv('email.bAuth'),
+    'sUsername' => getenv('email.sUsername'),
+    'sPassword' => getenv('email.sPassword'),
 );

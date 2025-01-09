@@ -62,7 +62,7 @@ $aConfig['MODULE']['Email'] = array(
 _create an Email Object and add job to Queue_    
 ~~~php
 // email
-$oEmail = \Email\DataType\Email::create()
+$oDTEmail = \Email\DataType\DTEmail::create()
     ->set_subject('Example Subject')
     ->set_recipientMailAdresses(array('foo@example.com'))
     ->set_senderMail(Config::MODULE('Email')['sSenderEmailAddress'])
@@ -71,7 +71,7 @@ $oEmail = \Email\DataType\Email::create()
     ->set_html('<h1>Foo</h1><p>bar</p>')
     ->set_oAttachment(DTArrayObject::create()
         // 1. attachment
-        ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmailAttachment')->set_sValue(EmailAttachment::create()
+        ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmailAttachment')->set_sValue(DTEmailAttachment::create()
             ->set_file('/var/www/html/public/robots.txt')
             ->set_name('robots.txt')
         ))
@@ -81,7 +81,7 @@ $oEmail = \Email\DataType\Email::create()
 Queue::push(
     oDTAppTableQueue: \App\DataType\DTAppTableQueue::create()
         ->set_key('Email::new')
-        ->set_value(json_encode(Convert::objectToArray($oEmail))),
+        ->set_value(json_encode(Convert::objectToArray($oDTEmail))),
     bPreventMultipleCreation: true
 );
 ~~~
@@ -109,7 +109,9 @@ $aConfig['MODULE']['Foo']['queue']['worker'] = [
 
 ## Events
 
-- `email.model.worker.EmailNew.send.before`
-- `email.model.smtp.sendViaPhpMailer.after`
-- `email.model.worker.EmailNew.send.after`
+- `email.model.worker.EmailNew.send.before`: DTEmail
+- `email.model.smtp.sendViaPhpMailer.before`: DTEmail
+- `email.model.smtp.sendViaPhpMailer.error`: Exception
+- `email.model.smtp.sendViaPhpMailer.after`: DTEmailResponse
+- `email.model.worker.EmailNew.send.after`: DTEmailResponse
 
