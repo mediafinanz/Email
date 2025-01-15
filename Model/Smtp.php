@@ -91,7 +91,7 @@ class Smtp
         } catch (Exception $oException) {
 
             Event::run('email.model.smtp.sendViaPhpMailer.error', $oException);
-            Event::run ('mvc.error', $oException);
+            Event::run('mvc.error', DTArrayObject::create()->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException)));
 
             $oDTEmailResponse = DTEmailResponse::create()
                 ->set_bSuccess(false)
@@ -104,7 +104,7 @@ class Smtp
         } catch (\Exception $oException) {
 
             Event::run('email.model.smtp.sendViaPhpMailer.error', $oException);
-            Event::run ('mvc.error', $oException);
+            Event::run('mvc.error', DTArrayObject::create()->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException)));
 
             $oDTEmailResponse = DTEmailResponse::create()
                 ->set_bSuccess(false)
