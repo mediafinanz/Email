@@ -69,13 +69,9 @@ $oDTEmail = \Email\DataType\DTEmail::create()
     ->set_senderName('foo')
     ->set_text("Foo\nbar\n")
     ->set_html('<h1>Foo</h1><p>bar</p>')
-    ->set_oAttachment(DTArrayObject::create()
-        // 1. attachment
-        ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmailAttachment')->set_sValue(DTEmailAttachment::create()
-            ->set_file('/var/www/html/public/robots.txt')
-            ->set_name('robots.txt')
-        ))
-    );
+    // 1. attachment
+    ->add_aAttachment(DTEmailAttachment::create()->set_file('/var/www/html/public/robots.txt')->set_name('robots.txt'))
+    ;    
 
 // add job to queue
 Queue::push(

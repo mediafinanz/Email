@@ -42,8 +42,8 @@ $aDataType['class']['DTEmail'] = array(
         array('key' => 'senderMail', 'var' => 'string', 'required' => true, 'forceCasting' => true,),
         array('key' => 'senderName', 'var' => 'string', 'required' => true, 'forceCasting' => true,),
         array(
-            'key' => 'oAttachment',
-            'var' => '\\MVC\\DataType\\DTArrayObject',
+            'key' => 'aAttachment',
+            'var' => '\Email\DataType\DTEmailAttachment[]',
             'required' => false, 'forceCasting' => true,
         ),
     ),

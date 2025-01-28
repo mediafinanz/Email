@@ -12,7 +12,7 @@ class DTEmail
 {
 	use TraitDataType;
 
-	public const DTHASH = '4ccbe8295ff14072d41a3bf74b6e7f1d';
+	public const DTHASH = 'bfc31dd82ba7154d3c0c008f2d5fc3ea';
 
 	/**
 	 * @required true
@@ -52,9 +52,9 @@ class DTEmail
 
 	/**
 	 * @required false
-	 * @var \MVC\DataType\DTArrayObject
+	 * @var \Email\DataType\DTEmailAttachment[]
 	 */
-	protected $oAttachment;
+	protected $aAttachment;
 
 	/**
 	 * DTEmail constructor.
@@ -71,7 +71,7 @@ class DTEmail
 		$this->html = null;
 		$this->senderMail = null;
 		$this->senderName = null;
-		$this->oAttachment = null;
+		$this->aAttachment = [];
 		$this->setProperties($oDTValue);
 
 		$oDTValue = DTValue::create()->set_mValue($aData); 
@@ -195,15 +195,41 @@ class DTEmail
 	}
 
 	/**
-	 * @param \MVC\DataType\DTArrayObject $mValue 
+	 * @param \Email\DataType\DTEmailAttachment[]  $mValue 
 	 * @return $this
 	 * @throws \ReflectionException
 	 */
-	public function set_oAttachment(\MVC\DataType\DTArrayObject $mValue)
+	public function set_aAttachment(array $mValue)
 	{
 		$oDTValue = DTValue::create()->set_mValue($mValue); 
-		\MVC\Event::run('DTEmail.set_oAttachment.before', $oDTValue);
-		$this->oAttachment = $oDTValue->get_mValue();
+		\MVC\Event::run('DTEmail.set_aAttachment.before', $oDTValue);
+
+		$mValue = (array) $oDTValue->get_mValue();
+                
+        foreach ($mValue as $mKey => $aData)
+        {            
+            if (false === ($aData instanceof \Email\DataType\DTEmailAttachment))
+            {
+                $mValue[$mKey] = \Email\DataType\DTEmailAttachment::create($aData);
+            }
+        }
+
+		$this->aAttachment = $mValue;
+
+		return $this;
+	}
+
+	/**
+	 * @param \Email\DataType\DTEmailAttachment $mValue
+	 * @return $this
+	 * @throws \ReflectionException 
+	 */
+	public function add_aAttachment(\Email\DataType\DTEmailAttachment $mValue)
+	{
+		$oDTValue = DTValue::create()->set_mValue($this->aAttachment); 
+		\MVC\Event::run('DTEmail.add_aAttachment.before', $oDTValue);
+
+		$this->aAttachment[] = $mValue;
 
 		return $this;
 	}
@@ -281,13 +307,13 @@ class DTEmail
 	}
 
 	/**
-	 * @return \MVC\DataType\DTArrayObject
+	 * @return \Email\DataType\DTEmailAttachment[]
 	 * @throws \ReflectionException
 	 */
-	public function get_oAttachment() : \MVC\DataType\DTArrayObject
+	public function get_aAttachment()
 	{
-		$oDTValue = DTValue::create()->set_mValue($this->oAttachment); 
-		\MVC\Event::run('DTEmail.get_oAttachment.before', $oDTValue);
+		$oDTValue = DTValue::create()->set_mValue($this->aAttachment); 
+		\MVC\Event::run('DTEmail.get_aAttachment.before', $oDTValue);
 
 		return $oDTValue->get_mValue();
 	}
@@ -343,9 +369,9 @@ class DTEmail
 	/**
 	 * @return string
 	 */
-	public static function getPropertyName_oAttachment()
+	public static function getPropertyName_aAttachment()
 	{
-        return 'oAttachment';
+        return 'aAttachment';
 	}
 
 	/**
